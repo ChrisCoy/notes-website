@@ -13,7 +13,6 @@ function clearScreen() {
 
 function deleteNote(id) {
   notes = notes.filter((note) => {
-    console.log(note.id, id);
     return note.id !== id;
   });
 
@@ -43,55 +42,47 @@ function renderNote({ offsetX, offsetY, rotate, _id, content }) {
     localStorage.setItem("@ChrisCoy:notes", JSON.stringify(notes));
   }
 
-  // prettier-ignore
-  divToAdd.innerHTML = `<div class='note' style='left: ${positionX}%; top: ${positionY}%;
-  transform: rotate(${rotation}deg);' id='${id}'>
-    <span onclick='deleteNote(${id})'></span>
-    <img src='./sources/images/note.png' />
-    <textarea name='note-content' id='text${id}' class='note-content'>${contentDiv}</textarea>
-  </div>`;
+  divToAdd.id = id;
+  divToAdd.style = `left: ${positionX}%; top: ${positionY}%; transform: rotate(${rotation}deg);`;
+  divToAdd.classList.add("note");
+  const closeButton = document.createElement("span");
+  closeButton.onclick = () => {
+    deleteNote(id);
+  };
+  const imgNote = document.createElement("img");
+  imgNote.src = "./sources/images/note.png";
 
-  // divToAdd.firstChild.childNodes[5].addEventListener("focusin", (evt) => {
-  //   console.log("entrooou");
-  //   evt.path[1].style.zIndex = "1";
-  // });
-  // divToAdd.firstChild.childNodes[5].addEventListener("focusout", (evt) => {
-  //   notes = notes.map((item) => {
-  //     return item.id == id ? { ...item, content: evt.path[0].value } : item;
-  //   });
-  //   localStorage.setItem("@ChrisCoy:notes", JSON.stringify(notes));
+  const noteContent = document.createElement("textarea");
+  noteContent.id = "text:" + id;
+  noteContent.classList.add("note-content");
+  noteContent.value = contentDiv;
 
-  //   setInterval(() => {
-  //     evt.path[1].style.zIndex = "0";
-  //   }, 1);
-  // });
+  divToAdd.onmouseenter = () => {
+    divToAdd.style.zIndex = "2";
+  };
 
-  // divToAdd.firstChild.childNodes[5].addEventListener("keydown", (evt) => {
-  //   if (evt.key === "Escape") {
-  //     evt.path[0].blur();
-  //   }
-  // });
+  divToAdd.onmouseleave = () => {
+    divToAdd.style.zIndex = "0";
+  };
 
-  document.querySelectorAll(".note").forEach((item) => {
-    item.addEventListener("focusin", (evt) => {
-      console.log("entrou");
-      console.log(evt.path);
-      evt.path[1].style.zIndex = "2";
-    });
-    item.addEventListener("focusout", (evt) => {
-      console.log("saiu");
-      console.log(evt.path);
-      evt.path[1].style.zIndex = "0";
-    });
-    item.addEventListener("keydown", (evt) => {
-      if (evt.key === "Escape") {
-        evt.path[0].blur();
-      }
-    });
+  noteContent.addEventListener("keydown", (evt) => {
+    if (evt.key === "Escape") {
+      noteContent.blur();
+    }
   });
 
-  console.log(divToAdd.firstChild);
-  container.appendChild(divToAdd.firstChild);
+  noteContent.onblur = () => {
+    notes = notes.map((note) => {
+      return note.id == id ? { ...note, content: noteContent.value } : note;
+    });
+    localStorage.setItem("@ChrisCoy:notes", JSON.stringify(notes));
+  };
+
+  divToAdd.appendChild(closeButton);
+  divToAdd.appendChild(imgNote);
+  divToAdd.appendChild(noteContent);
+
+  container.appendChild(divToAdd);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -106,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   container.addEventListener("mousedown", (evt) => {
-    if (evt.path[0] == container) {
+    if (evt.target == container) {
       renderNote({ offsetX: evt.offsetX, offsetY: evt.offsetY });
     }
   });

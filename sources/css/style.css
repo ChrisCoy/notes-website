@@ -4,7 +4,7 @@
   margin: 0;
   /* font-family: "Poppins", Helvetica, sans-serif; */
   /* font-family: "Edu VIC WA NT Beginner", cursive; */
-  font-family: "Architects Daughter", cursive;
+  font-family: "Edu VIC WA NT Beginner", "Architects Daughter", cursive;
 }
 
 .container {
@@ -33,7 +33,7 @@
 
 .note .note-content {
   position: absolute;
-  height: 86%;
+  height: 72%;
   width: 90%;
   top: 16%;
   left: 4%;
@@ -66,4 +66,19 @@
   -webkit-filter: drop-shadow(5px 5px 5px #222);
   filter: drop-shadow(5px 5px 5px #222);
   cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  margin-right: 16px;
+  padding-right: 16px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #20202b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #474747;
+  border-radius: 15px;
 }
